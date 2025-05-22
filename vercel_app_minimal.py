@@ -91,8 +91,6 @@ def music_fetch():
         
         # Make the request to the Music API
         response = requests.get(api_url)
-        
-        # Check if the request was successful
         if response.status_code == 200:
             fetch_result = response.json()
             return jsonify(fetch_result)
