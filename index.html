@@ -15,9 +15,7 @@
         <div class="container d-flex align-items-center">
             <div class="logo-container">
                 <i class="fab fa-spotify" style="font-size: 36px; color: white;"></i>
-            </div>
-            <div class="nav-controls mx-auto d-flex align-items-center">
-                <button id="homeButton" class="home-button me-3">
+            </div>            <div class="nav-controls mx-auto d-flex align-items-center">                <button id="homeButton" class="home-button me-3" title="Home">
                     <i class="fas fa-home"></i>
                 </button>
                 <div class="search-container">
@@ -28,6 +26,9 @@
                         <input type="text" id="searchBar" class="form-control" placeholder="What do you want to listen to?">
                     </div>
                 </div>
+                <a href="https://bpmiranda3099.github.io/" class="portfolio-link ms-3" title="Back to Portfolio">
+                    <i class="fas fa-user-circle"></i>
+                </a>
             </div>
         </div>
     </div>
@@ -92,10 +93,8 @@
                             <p>Listen to some music to see your recently played tracks here</p>
                         </div>
                     </div>
-                </div>
-
-                <!-- Search results section (initially hidden) -->
-                <div id="searchContent" style="display: none;">
+                </div>                <!-- Search results section (initially hidden) -->
+                <div id="searchContent" class="search-content">
                     <div class="mt-4">
                         <h2 class="fs-5 text-white mb-3">Search Results</h2>
                         <div id="resultsContainer" class="mt-3"></div>
@@ -168,10 +167,9 @@
             </div>
         </div>
     </div>
-    
-    <!-- Floating Review Button -->
+      <!-- Floating Review Button -->
     <div class="review-button-container" id="reviewButtonContainer">
-        <button class="review-button" id="reviewButton">
+        <button class="review-button" id="reviewButton" title="Write a Review">
             <i class="fas fa-star"></i>
         </button>
     </div>
@@ -189,9 +187,8 @@
                 <i class="far fa-star" data-rating="3"></i>
                 <i class="far fa-star" data-rating="4"></i>
                 <i class="far fa-star" data-rating="5"></i>
-            </div>
-            <textarea class="review-textarea" id="reviewText" placeholder="Write your review here... (required)"></textarea>
-            <div style="text-align: center;">
+            </div>            <textarea class="review-textarea" id="reviewText" placeholder="Write your review here... (required)"></textarea>
+            <div class="text-center">
                 <button class="review-submit-btn" id="submitReview">Submit</button>
             </div>
             <div class="sentiment-result" id="sentimentResult"></div>

@@ -1252,3 +1252,26 @@ i:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
+
+/* Portfolio link icon styles */
+.portfolio-link {
+    color: #1DB954; /* Spotify green */
+    font-size: 22px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portfolio-link:hover {
+    color: #1ed760; /* Lighter Spotify green */
+    transform: scale(1.1);
+}
+
+.search-content {
+    display: none;
+}
+
+.text-center {
+    text-align: center;
+}
