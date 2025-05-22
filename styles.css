@@ -1261,11 +1261,13 @@ i:hover {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-decoration: none; /* Remove underline */
 }
 
 .portfolio-link:hover {
     color: #1ed760; /* Lighter Spotify green */
     transform: scale(1.1);
+    text-decoration: none; /* Ensure no underline on hover */
 }
 
 .search-content {
