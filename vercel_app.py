@@ -1,68 +1,28 @@
 from flask import Flask, request, jsonify
-import joblib
-from flask_cors import CORS
-from loguru import logger
-import sys
 import requests
+from flask_cors import CORS
+import os
+import json
 
 # Initialize Flask app and CORS
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Configure loguru logger with colors
-logger.add(
-    sys.stderr, 
-    format="<green>{time}</green> <level>{message}</level>", 
-    level="DEBUG"
-)
+# Global variables to hold our loaded models
+sentiment_model = None
+tfidf_vectorizer = None
 
-# Load the sentiment analysis model and vectorizer
+# Try to load the models on startup
 try:
+    import joblib
+    print("Loading sentiment model and vectorizer...")
     sentiment_model = joblib.load('best_sentiment_model_rf.pkl')
     tfidf_vectorizer = joblib.load('sentiment_tfidf_vectorizer.pkl')
-    logger.info("Successfully loaded sentiment analysis model and vectorizer")
+    print("Models loaded successfully")
 except Exception as e:
-    logger.error(f"Error loading sentiment model or vectorizer: {e}")
-    sentiment_model = None
-    tfidf_vectorizer = None
+    print(f"Error loading models on startup: {str(e)}")
+    print("Will attempt to load models on first API call")
 
-
-@app.route('/analyze-sentiment', methods=['POST'])
-def analyze_sentiment():
-    """Analyze the sentiment of a review using the pre-trained model."""
-    data = request.json
-    if not data or 'review' not in data:
-        return jsonify({'error': 'No review text provided'}), 400
-
-    review_text = data['review']
-    rating = data.get('rating', 0)
-    
-    try:
-        # Check if model and vectorizer are loaded
-        if sentiment_model is None or tfidf_vectorizer is None:
-            return jsonify({'error': 'Sentiment analysis model not available'}), 500
-
-        # Transform the text using the vectorizer
-        text_transformed = tfidf_vectorizer.transform([review_text])
-        
-        # Make prediction
-        prediction = sentiment_model.predict(text_transformed)
-        
-        # Convert prediction to sentiment label using the first prediction
-        # Convert NumPy int64 to standard Python int to ensure JSON serialization
-        sentiment = int(prediction[0])
-        logger.info(f"Sentiment analysis result for review: {sentiment}")
-        return jsonify({
-            'sentiment': sentiment,
-            'review': review_text,
-            'rating': rating
-        })
-    except Exception as e:
-        logger.exception(f"Error analyzing sentiment: {e}")
-        return jsonify({'error': str(e)}), 500
-
-
-# Music API integration - Serverless friendly alternative to yt-dlp
 @app.route('/music-search', methods=['GET'])
 def music_search():
     """Search for music using the Music API."""
@@ -70,7 +30,6 @@ def music_search():
     search_engine = request.args.get('searchEngine', 'gaama')  # Default to gaama if not specified
     
     if not query:
-        logger.error("No search query provided in the request.")
         return jsonify({'error': 'No search query provided'}), 400
     
     try:
@@ -78,19 +37,15 @@ def music_search():
         api_url = f"https://musicapi.x007.workers.dev/search?q={query}&searchEngine={search_engine}"
         
         # Make the request to the Music API
-        logger.debug(f"Searching for music: {query} using {search_engine}")
         response = requests.get(api_url)
         
         # Check if the request was successful
         if response.status_code == 200:
             search_results = response.json()
-            logger.debug(f"Found {len(search_results.get('response', []))} music results")
             return jsonify(search_results)
         else:
-            logger.error(f"Music API search error: {response.text}")
             return jsonify({'error': f'Music API returned status code {response.status_code}'}), response.status_code
     except Exception as e:
-        logger.exception("An unexpected error occurred during music search:")
         return jsonify({'error': str(e)}), 500
 
 
@@ -100,7 +55,6 @@ def music_fetch():
     song_id = request.args.get('id')
     
     if not song_id:
-        logger.error("No song ID provided in the request.")
         return jsonify({'error': 'No song ID provided'}), 400
     
     try:
@@ -108,19 +62,15 @@ def music_fetch():
         api_url = f"https://musicapi.x007.workers.dev/fetch?id={song_id}"
         
         # Make the request to the Music API
-        logger.debug(f"Fetching music with ID: {song_id}")
         response = requests.get(api_url)
         
         # Check if the request was successful
         if response.status_code == 200:
             fetch_result = response.json()
-            logger.debug(f"Successfully fetched music stream URL")
             return jsonify(fetch_result)
         else:
-            logger.error(f"Music API fetch error: {response.text}")
             return jsonify({'error': f'Music API returned status code {response.status_code}'}), response.status_code
     except Exception as e:
-        logger.exception("An unexpected error occurred while fetching music:")
         return jsonify({'error': str(e)}), 500
 
 
@@ -130,7 +80,6 @@ def music_lyrics():
     song_id = request.args.get('id')
     
     if not song_id:
-        logger.error("No song ID provided in the request.")
         return jsonify({'error': 'No song ID provided'}), 400
     
     try:
@@ -138,21 +87,150 @@ def music_lyrics():
         api_url = f"https://musicapi.x007.workers.dev/lyrics?id={song_id}"
         
         # Make the request to the Music API
-        logger.debug(f"Fetching lyrics for song ID: {song_id}")
         response = requests.get(api_url)
         
         # Check if the request was successful
         if response.status_code == 200:
             lyrics_result = response.json()
-            logger.debug("Successfully fetched lyrics")
             return jsonify(lyrics_result)
         else:
-            logger.error(f"Music API lyrics error: {response.text}")
             return jsonify({'error': f'Music API returned status code {response.status_code}'}), response.status_code
     except Exception as e:
-        logger.exception("An unexpected error occurred while fetching lyrics:")
         return jsonify({'error': str(e)}), 500
 
 
-# For Vercel, we need to export the Flask app as "app"
-app = app
+@app.route('/analyze-sentiment', methods=['POST'])
+def analyze_sentiment():
+    """Analyze the sentiment of a review using the pre-trained model."""
+    global sentiment_model, tfidf_vectorizer
+    
+    data = request.json
+    if not data or 'review' not in data:
+        return jsonify({'error': 'No review text provided'}), 400
+
+    # Get the review text and rating
+    review_text = data['review']
+    rating = data.get('rating', 0)
+    
+    # Log request details for debugging purposes
+    print(f"Sentiment analysis request received - Text length: {len(review_text)}, Rating: {rating}")
+    
+    # First try using the ML model approach
+    try:
+        # If models aren't loaded yet, try loading them
+        if sentiment_model is None or tfidf_vectorizer is None:
+            print("Models not loaded yet, attempting to load...")
+            import joblib
+            sentiment_model = joblib.load('best_sentiment_model_rf.pkl')
+            tfidf_vectorizer = joblib.load('sentiment_tfidf_vectorizer.pkl')
+            print("Models loaded successfully on first request")
+        
+        # Import necessary modules for text processing
+        import nltk
+        from nltk.corpus import stopwords
+        from nltk.tokenize import word_tokenize
+        
+        # Make sure NLTK data is available (for Vercel environment)
+        try:
+            nltk.data.find('tokenizers/punkt')
+        except LookupError:
+            print("Downloading NLTK punkt tokenizer...")
+            nltk.download('punkt')
+        
+        try:
+            nltk.data.find('corpora/stopwords')
+        except LookupError:
+            print("Downloading NLTK stopwords...")
+            nltk.download('stopwords')
+        
+        # Preprocess the text (similar to what was done in training)
+        stop_words = set(stopwords.words('english'))
+        
+        # Process text similar to training pipeline
+        processed_text = ' '.join([word for word in word_tokenize(review_text.lower()) 
+                                if word.isalnum() and word not in stop_words])
+        
+        print(f"Text preprocessing complete. Processed text length: {len(processed_text)}")
+        
+        # Transform the text using the vectorizer
+        text_transformed = tfidf_vectorizer.transform([processed_text])
+        
+        # Make prediction
+        prediction = sentiment_model.predict(text_transformed)
+        
+        # Convert NumPy int64 to standard Python int to ensure JSON serialization
+        sentiment = int(prediction[0])
+        
+        print(f"ML model prediction: {sentiment}")
+        
+        model_used = "machine_learning"
+        
+    except Exception as e:
+        # Log detailed error for debugging
+        print(f"Error using ML model: {str(e)}. Traceback: {e.__class__.__name__}")
+        print("Falling back to rule-based approach...")
+        
+        # Enhanced rule-based sentiment analysis as fallback
+        model_used = "rule_based"
+        
+        # More comprehensive word lists
+        positive_words = [
+            'good', 'great', 'excellent', 'amazing', 'love', 'best', 'awesome', 'fantastic',
+            'wonderful', 'outstanding', 'brilliant', 'superb', 'enjoy', 'perfect', 'top',
+            'favorite', 'happy', 'pleased', 'recommend', 'useful', 'helpful', 'impressive'
+        ]
+        
+        negative_words = [
+            'bad', 'terrible', 'awful', 'horrible', 'hate', 'worst', 'poor', 'disappointing',
+            'useless', 'annoying', 'frustrating', 'waste', 'problem', 'difficult', 'fail',
+            'failure', 'broken', 'issue', 'problem', 'worthless', 'mediocre', 'misleading'
+        ]
+        
+        review_lower = review_text.lower()
+        review_words = review_lower.split()
+        
+        # Count positive and negative words
+        positive_count = sum(1 for word in positive_words if word in review_lower)
+        negative_count = sum(1 for word in negative_words if word in review_lower)
+        
+        # Determine sentiment
+        sentiment = 1  # Default to neutral
+        if positive_count > negative_count:
+            sentiment = 2  # Positive
+        elif negative_count > positive_count:
+            sentiment = 0  # Negative
+            
+        # If rating is provided, factor it in
+        if rating:
+            if rating >= 4:  # 4-5 stars
+                sentiment = max(1, sentiment)  # At least neutral, possibly positive
+            elif rating <= 2:  # 1-2 stars
+                sentiment = min(1, sentiment)  # At most neutral, possibly negative
+        
+        print(f"Rule-based prediction: {sentiment} (Pos: {positive_count}, Neg: {negative_count})")
+    
+    return jsonify({
+        'sentiment': sentiment,
+        'review': review_text,
+        'rating': rating,
+        'model_used': model_used
+    })
+
+# Add a diagnostic endpoint to check environment
+@app.route('/diagnostics', methods=['GET'])
+def diagnostics():
+    """Return information about the environment and models for debugging."""
+    environment_info = {
+        'python_version': os.sys.version,
+        'environment_variables': {k: v for k, v in os.environ.items() if not k.startswith('AWS') and not k.startswith('SECRET')},
+        'models_loaded': {
+            'sentiment_model': sentiment_model is not None,
+            'tfidf_vectorizer': tfidf_vectorizer is not None
+        },
+        'file_exists': {
+            'model_file': os.path.exists('best_sentiment_model_rf.pkl'),
+            'vectorizer_file': os.path.exists('sentiment_tfidf_vectorizer.pkl')
+        }
+    }
+    
+    return jsonify(environment_info)

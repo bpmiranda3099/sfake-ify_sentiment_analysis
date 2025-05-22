@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "vercel_app.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     },
     {
       "src": "*.html",
@@ -15,10 +18,6 @@
     },
     {
       "src": "*.js",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.pkl",
       "use": "@vercel/static"
     }
   ],
@@ -37,6 +36,10 @@
     },
     {
       "src": "/music-lyrics",
+      "dest": "vercel_app.py"
+    },
+    {
+      "src": "/diagnostics",
       "dest": "vercel_app.py"
     },
     {
