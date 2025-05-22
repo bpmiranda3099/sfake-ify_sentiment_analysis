@@ -1,0 +1,1254 @@
+@import url(//db.onlinewebfonts.com/c/860c3ec7bbc5da3e97233ccecafe512e?family=Circular+Std+Book);
+
+* {
+    box-sizing: border-box;
+    font-family: "circular std book", sans-serif;
+    scrollbar-width: thin;
+    scrollbar-color: #535353 #121212;
+}
+
+*::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #121212;
+    border-radius: 6px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #535353;
+    border-radius: 6px;
+    border: 3px solid #121212;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #b3b3b3;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #000000; /* Spotify's dark background */
+    font-size: 14px;
+    color: white;
+}
+
+/* Spotify-styled header */
+#topHeader {
+    background-color: #000000 !important;
+    padding: 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    padding-left: 24px; /* Add padding to the header to make room for the logo */
+}
+
+#topHeader .container {
+    position: relative;
+}
+
+#topHeader h1 {
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -0.04em;
+}
+
+/* Logo container for the icon */
+.logo-container {
+    position: absolute;
+    left: 0;
+    display: flex;
+    align-items: center;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0; /* Reset the margin */
+    padding-left: 10px; /* Add some padding from the absolute left edge */
+}
+
+.logo-container i {
+    color: white !important; /* Ensure the icon is white */
+}
+
+/* Search container in header */
+.search-container {
+    width: 50%; /* Reduced from 100% to 50% */
+    max-width: 500px; /* Reduced from 1000px to 500px */
+    background-color: #282828;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.search-container:focus-within {
+    box-shadow: 0 0 0 2px #1DB954; /* Green outline on focus */
+    background-color: #333;
+}
+
+/* Spotify-styled search bar */
+.input-group {
+    margin-top: 0;
+    background-color: #282828;
+    border-radius: 24px; /* More rounded corners */
+    overflow: hidden;
+}
+
+.input-group .form-control {
+    background-color: #282828;
+    border: none;
+    color: white;
+    padding: 12px 16px;
+    border-radius: 24px; /* More rounded corners */
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.input-group .form-control::placeholder {
+    color: #a7a7a7;
+}
+
+.input-group .form-control:focus {
+    background-color: #333;
+    box-shadow: none;
+    color: white;
+}
+
+.input-group .input-group-text {
+    background-color: #282828 !important;
+    border-radius: 24px 0 0 24px; /* More rounded left corners */
+    transition: all 0.3s ease;
+}
+
+.search-container:focus-within .input-group-text,
+.search-container:focus-within .form-control {
+    background-color: #333 !important;
+}
+
+.input-group .btn-primary {
+    background-color: #1DB954; /* Spotify green */
+    border-color: #1DB954;
+    font-weight: 700;
+    padding: 0 16px;
+    border-radius: 0 4px 4px 0;
+}
+
+.input-group .btn-primary:hover {
+    background-color: #1ed760;
+    border-color: #1ed760;
+    transform: scale(1.02);
+}
+
+.music-player {
+    --primary-color: #fff;
+    --secondary-color: #b3b3b3;
+    --green-color: #1DB954;
+    --padding: 1em;
+    background-color: #181818;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    height: 7rem;
+    padding: var(--padding);
+    color: var(--primary-color);
+}
+
+/* Main container spacing to accommodate the fixed header and footer */
+.container.my-4 {
+    margin-top: 1rem !important;
+    margin-bottom: 8rem !important;
+}
+
+i {
+    color: var(--secondary-color);
+}
+
+i:hover {
+    color: var(--primary-color);
+}
+
+.song-bar {
+    position: absolute;
+    left: var(--padding);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    width: 25%;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Hidden state for song bar when no song is selected */
+.song-bar.hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.song-infos {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.image-container {
+    --size: 4.5em;
+    flex-shrink: 0;
+    width: var(--size);
+    height: var(--size);
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.song-description p {
+    margin: 0.2em;
+}
+
+.title,
+.artist {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+}
+
+.title:hover,
+.artist:hover {
+    text-decoration: underline;
+}
+
+.artist {
+    color: var(--secondary-color);
+}
+
+.icons {
+    display: flex;
+    gap: 1em;
+}
+
+.progress-controller {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5em;
+    color: var(--secondary-color);
+}
+
+.control-buttons {
+    display: flex;
+    align-items: center;
+    gap: 2em;
+}
+
+.play-pause {
+    display: inline-block;
+    padding: 1em;
+    background-color: white;
+    color: #111;
+    border-radius: 50%;
+}
+
+.play-pause:hover {
+    transform: scale(1.1);
+    color: #111;
+}
+
+.progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+}
+
+.progress-bar {
+    height: 4px;
+    border-radius: 10px;
+    width: 30%;
+    background-color: #535353;
+}
+
+.progress {
+    position: relative;
+    height: 100%;
+    width: 30%;
+    border-radius: 10px;
+    background-color: var(--secondary-color);
+}
+
+.progress-bar:hover .progress {
+    background-color: #1DB954;
+}
+
+.progress-bar:hover .progress::after {
+    content: "";
+    position: absolute;
+    --size: 1em;
+    width: var(--size);
+    height: var(--size);
+    right: 0;
+    border-radius: 50%;
+    background-color: white;
+    transform: translate(50%, calc(2px - 50%));
+}
+
+.other-features {
+    position: absolute;
+    right: var(--padding);
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.volume-bar {
+    display: flex;
+    align-items: center;
+    gap: .7em;
+}
+
+.volume-bar .progress-bar {
+    width: 6em;
+}
+
+.volume-bar .progress-bar:hover .progress::after {
+    --size: .8em;
+}
+
+/* Ensure the bottom navigation stays fixed at the bottom */
+#bottomNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #000000;
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Spotify-styled grid layout */
+#resultsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 24px;
+    padding: 16px 8px;
+    margin-bottom: 24px; /* Reduced margin since we have proper container now */
+}
+
+/* Spotify-styled card design */
+#resultsContainer .result-card {
+    background-color: #181818;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 16px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+#resultsContainer .result-card:hover {
+    background-color: #282828;
+}
+
+#resultsContainer .result-card img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+
+#resultsContainer .result-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 8px 0;
+    line-height: 1.4;
+    letter-spacing: normal;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#resultsContainer .result-card p {
+    font-size: 14px;
+    color: #a7a7a7;
+    margin: 0 0 4px 0;
+    text-align: left;
+}
+
+#resultsContainer .result-card button {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #1DB954;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    transform: translateY(8px);
+}
+
+#resultsContainer .result-card:hover button {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#resultsContainer .result-card button:hover {
+    transform: scale(1.1);
+    background-color: #1ed760;
+}
+
+/* Loading spinner */
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.spinner-border {
+    color: #1DB954 !important;
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Main wrapper layout */
+.main-wrapper {
+    display: flex;
+    height: calc(94vh - 100px); /* Set a fixed height to position above bottom nav */
+    max-height: calc(94vh - 100px); /* Ensure it doesn't overlap the bottom nav */
+    position: relative;
+    padding-bottom: 10px; /* Add a bit of padding at the bottom */
+}
+
+/* Adjust layout when queue is visible */
+.main-wrapper.with-queue .content-container {
+    width: 65%; /* Updated to fill middle space when both sidebars are visible (100% - 17.5% - 17.5%) */
+}
+
+/* Library container styling */
+.library-container {
+    width: 17.5%;
+    background-color: #121212;
+    border-radius: 8px;
+    margin: 8px;
+    margin-bottom: 8px; /* Ensure there's space above the bottom nav */
+    padding: 16px;
+    overflow-y: auto;
+    height: calc(92.2vh - 100px); /* Set a fixed height to position above bottom nav */
+    max-height: calc(92.2vh - 100px); /* Ensure it doesn't overlap the bottom nav */
+}
+
+/* Library header styling */
+.library-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.library-header i {
+    color: #b3b3b3;
+    cursor: pointer;
+}
+
+.library-header i:hover {
+    color: #fff;
+}
+
+/* Library filter pills */
+.library-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.filter-pill {
+    background-color: #232323;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.filter-pill.active {
+    background-color: #333;
+}
+
+.filter-pill:hover {
+    background-color: #2a2a2a;
+}
+
+/* Library content */
+.library-content {
+    color: #fff;
+    margin-top: 16px;
+}
+
+/* Favorites container styling */
+#favorites-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Favorite item styling */
+.favorite-item {
+    display: flex;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.favorite-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.favorite-item .item-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.favorite-item .item-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.favorite-item .item-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.favorite-item .item-artist {
+    font-size: 12px;
+    color: #a7a7a7;
+    margin: 4px 0 0;
+}
+
+/* Three-dot menu in favorites */
+.menu-dots {
+    cursor: pointer;
+    margin-left: auto;
+    color: #aaa;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.menu-dots:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+    position: absolute;
+    background-color: #282828;
+    border-radius: 4px;
+    width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    z-index: 100;
+    right: 0;
+    top: 100%;
+    display: none;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.menu-option {
+    padding: 12px 16px;
+    color: #eee;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.menu-option:hover {
+    background-color: #333;
+}
+
+.menu-option i {
+    margin-right: 10px;
+    width: 15px;
+}
+
+/* Filled heart icon for favorited songs */
+.heart-icon.favorited {
+    color: #1DB954;
+}
+
+/* Queue icon in favorites */
+.queue-add-icon {
+    margin-left: 8px;
+    color: #a7a7a7;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.favorite-item:hover .queue-add-icon {
+    opacity: 1;
+}
+
+.queue-add-icon:hover {
+    color: #1DB954;
+}
+
+/* Artist/Channel item in library */
+.channel-item {
+    display: flex;
+    align-items: center;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.channel-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.channel-item .channel-name {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.channel-item .song-count {
+    font-size: 12px;
+    color: #a7a7a7;
+}
+
+/* Empty library state */
+.empty-library {
+    padding: 16px;
+    text-align: center;
+    margin-top: 32px;
+    color: #a7a7a7;
+}
+
+/* Queue container styling */
+.queue-container {
+    width: 17.5%;
+    background-color: #121212;
+    border-radius: 8px;
+    margin: 8px;
+    margin-left: 0;
+    padding: 16px;
+    overflow-y: auto;
+    height: calc(92.2vh - 100px);
+    max-height: calc(92.2vh - 100px);
+    transition: all 0.3s ease;
+}
+
+.queue-container.hidden {
+    display: none;
+}
+
+/* Queue header styling */
+.queue-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.queue-header i {
+    color: #b3b3b3;
+    cursor: pointer;
+}
+
+.queue-header i:hover {
+    color: #fff;
+}
+
+/* Queue content */
+.queue-content {
+    color: #fff;
+    margin-top: 16px;
+}
+
+/* Queue list styling */
+.queue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Queue item styling */
+.queue-item {
+    display: flex;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.05);
+    transition: all 0.2s ease;
+    cursor: grab;
+    position: relative;
+}
+
+.queue-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.queue-item .item-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-right: 12px;
+}
+
+.queue-item .item-info {
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.queue-item .item-title {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.queue-item .item-artist {
+    font-size: 12px;
+    color: #a7a7a7;
+    margin: 4px 0 0;
+}
+
+.queue-item .remove-queue {
+    opacity: 0;
+    color: #a7a7a7;
+    transition: all 0.2s ease;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.queue-item:hover .remove-queue {
+    opacity: 1;
+}
+
+.queue-item .remove-queue:hover {
+    color: #fff;
+}
+
+/* Queue empty state */
+.empty-queue {
+    padding: 16px;
+    text-align: center;
+    margin-top: 32px;
+    color: #a7a7a7;
+}
+
+/* Queue dragging styles */
+.queue-item.dragging {
+    opacity: 0.5;
+    background-color: #333;
+    cursor: grabbing;
+}
+
+/* Highlight the queue toggle button when active */
+.queue-toggle.active {
+    color: #1DB954 !important;
+}
+
+/* Content container */
+.content-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 0 16px;
+    width: 82.5%; /* Updated to fill space when only library is visible (100% - 17.5%) */
+    background-color: #121212;
+    border-radius: 8px;
+    margin: 8px;
+    margin-left: 0;
+    margin-bottom: 8px; /* Space above the bottom nav */
+    max-height: calc(92.2vh - 100px); /* Match library height */
+    position: relative;
+}
+
+.content-container .container {
+    padding: 16px;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
+.content-container h2 {
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 24px;
+    padding-left: 8px;
+}
+
+/* Gradient background effect like Spotify */
+.content-container:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 240px;
+    background: linear-gradient(rgba(0,0,0,0.6) 0%, rgba(18,18,18,0) 100%);
+    pointer-events: none;
+    border-radius: 8px 8px 0 0;
+    z-index: 0;
+}
+
+/* Ensure content appears above the gradient */
+.content-container > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Home button styling */
+.home-button {
+    background: transparent;
+    border: none;
+    color: #b3b3b3;
+    font-size: 20px;
+    padding: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.home-button:hover {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.home-button.active {
+    color: #1DB954;
+}
+
+/* Nav controls container */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    width: 60%; /* Reduced from 80% to 60% */
+    justify-content: center;
+}
+
+/* Content section styling */
+.content-section {
+    margin-bottom: 40px;
+}
+
+.content-section h2 {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Row container for horizontal scrolling */
+.row-container {
+    display: flex;
+    overflow-x: auto;
+    gap: 16px;
+    padding: 8px 0;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: #666 #333;
+}
+
+.row-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.row-container::-webkit-scrollbar-track {
+    background: #333;
+    border-radius: 4px;
+}
+
+.row-container::-webkit-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 4px;
+}
+
+/* Item card styling */
+.item-card {
+    min-width: 180px;
+    max-width: 180px;
+    background-color: #181818;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.item-card:hover {
+    background-color: #282828;
+    transform: translateY(-4px);
+}
+
+.item-card img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+    object-fit: cover;
+    margin-bottom: 16px;
+}
+
+.item-card h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.item-card p {
+    font-size: 12px;
+    color: #a7a7a7;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Playlist cover collage styles */
+.playlist-cover {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.playlist-cover-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    width: 100%;
+    height: 100%;
+    gap: 2px;
+}
+
+.cover-grid-item {
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+}
+
+.cover-grid-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    margin: 0;
+    border-radius: 0;
+}
+
+.single-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Make the item-card img rule not apply to playlist covers */
+.item-card .playlist-cover img {
+    margin-bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Empty section message */
+.empty-section-message {
+    width: 100%;
+    padding: 32px;
+    text-align: center;
+    color: #a7a7a7;
+    font-size: 14px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+}
+
+/* Media queries for responsiveness */
+@media (max-width: 1200px) {
+    .search-container {
+        width: 50%;
+        max-width: 450px;
+    }
+    
+    .nav-controls {
+        width: 60%;
+    }
+}
+
+@media (max-width: 768px) {
+    #topHeader .container {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .search-container {
+        width: 70%;
+        max-width: 100%;
+    }
+    
+    .nav-controls {
+        width: 90%;
+    }
+}
+
+/* Floating Review Button */
+.review-button-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+    cursor: move;
+}
+
+.review-button {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.review-button:hover {
+    transform: scale(1.1);
+    background-color: #1ed760;
+}
+
+.review-button i {
+    font-size: 24px;
+}
+
+/* Review Modal */
+.review-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.review-modal-content {
+    background-color: #121212;
+    color: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.review-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.review-modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close-modal:hover {
+    color: white;
+}
+
+.star-rating {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.star-rating i {
+    font-size: 30px;
+    color: #555;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: color 0.2s;
+}
+
+.star-rating i.active {
+    color: #FFCE00;
+}
+
+.review-textarea {
+    width: 100%;
+    height: 120px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 15px;
+    resize: none;
+}
+
+.review-textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #1DB954;
+}
+
+.review-submit-btn {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.review-submit-btn:hover {
+    background-color: #1ed760;
+}
+
+.sentiment-result {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    display: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sentiment-positive {
+    color: #1DB954;
+    border: 1px solid #1DB954;
+}
+
+.sentiment-neutral {
+    color: #FFCE00;
+    border: 1px solid #FFCE00;
+}
+
+.sentiment-negative {
+    color: #FF5151;
+    border: 1px solid #FF5151;
+}
+
+.sentiment-error {
+    color: #FF5151;
+    border: 1px solid #FF5151;
+}
+
+/* Draggable Review Button */
+#reviewButtonContainer {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    z-index: 1000;
+    cursor: grab;
+    transition: transform 0.1s ease;
+    /* Support for transform in dragStart/dragEnd */
+    will-change: transform;
+    touch-action: none; /* Prevent browser handling of touch events */
+}
+
+#reviewButtonContainer.dragging {
+    cursor: grabbing;
+    opacity: 0.8;
+    transform-origin: center center;
+    filter: drop-shadow(0 0 6px rgba(29, 185, 84, 0.5)); /* Spotify green shadow */
+}
+
+#reviewButton {
+    background-color: #1DB954; /* Spotify green */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#reviewButton:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
