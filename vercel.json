@@ -2,10 +2,10 @@
   "version": 2,
   "builds": [
     {
-      "src": "vercel_app.py",
+      "src": "vercel_app_minimal.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "50mb"
+        "maxLambdaSize": "15mb"
       }
     },
     {
@@ -24,23 +24,23 @@
   "routes": [
     {
       "src": "/analyze-sentiment",
-      "dest": "vercel_app.py"
+      "dest": "vercel_app_minimal.py"
     },
     {
       "src": "/music-search",
-      "dest": "vercel_app.py"
+      "dest": "vercel_app_minimal.py"
     },
     {
       "src": "/music-fetch",
-      "dest": "vercel_app.py"
+      "dest": "vercel_app_minimal.py"
     },
     {
       "src": "/music-lyrics",
-      "dest": "vercel_app.py"
+      "dest": "vercel_app_minimal.py"
     },
     {
       "src": "/diagnostics",
-      "dest": "vercel_app.py"
+      "dest": "vercel_app_minimal.py"
     },
     {
       "src": "/(.*)",
